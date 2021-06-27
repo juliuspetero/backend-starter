@@ -1,2 +1,2 @@
-# backend-starter
-Base project for building amazing things
+# mojan-node
+Bank transfer applicatiom

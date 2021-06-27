@@ -1,0 +1,518 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="create-table-account" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="account"/>
+            </not>
+        </preConditions>
+        <comment>Create table for registering all accounts created in the system</comment>
+        <createTable tableName="account">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="unique_account_name"/>
+            </column>
+            <column name="address" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_code" type="varchar(2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="unique_account_email"/>
+            </column>
+            <column name="contact_phone_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activated_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="true"/>
+            </column>
+            <column name="activated_by" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="record_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-company" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="company"/>
+            </not>
+        </preConditions>
+        <comment>Create table for recording all companies registered to used the system</comment>
+        <createTable tableName="company">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="unique_company_name"/>
+            </column>
+            <column name="registration_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registration_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="15062021_FK_company_account_id"
+                             references="account(id)"/>
+            </column>
+            <column name="address" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="unique_org_email"/>
+            </column>
+            <column name="phone_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_company_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="record_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-branch" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="branch"/>
+            </not>
+        </preConditions>
+        <comment>Branch table is used record all branches under a company</comment>
+        <createTable tableName="branch">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="25062021_FK_branch_company_id"
+                             references="company(id)"/>
+            </column>
+            <column name="parent_branch_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="record_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-permission" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="permission"/>
+            </not>
+        </preConditions>
+        <comment>Create table for recording all the endpoint permissions</comment>
+        <createTable tableName="permission">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-initial-permissions" author="juliuspetero@outlook.com">
+        <comment>Create commonly used permissions for all users</comment>
+        <sql>
+            <![CDATA[
+
+                -- Account permissions
+                INSERT IGNORE INTO permission(name, action_type, entity_type, category)
+                VALUES ('SUPER_PERMISSION', 'ALL', 'ALL', 'GENERAL'),
+                ('READ_USER_ACCOUNTS', 'READ', 'ACCOUNT', 'BACK_OFFICE'),
+                ('ACTIVATE_USER_ACCOUNTS', 'ACTIVATE', 'ACCOUNT', 'BACK_OFFICE'),
+                ('UPDATE_USER_ACCOUNTS', 'UPDATE', 'ACCOUNT', 'BACK_OFFICE'),
+                ('CLOSE_USER_ACCOUNTS', 'CLOSE', 'ACCOUNT', 'BACK_OFFICE');
+
+                -- User permissions
+                INSERT IGNORE INTO permission(name, action_type, entity_type, category)
+                VALUES ('READ_APPLICATION_USERS', 'READ', 'USER', 'GENERAL'),
+                ('UPDATE_APPLICATION_USERS', 'UPDATE', 'USER', 'GENERAL'),
+                ('CREATE_APPLICATION_USERS', 'CREATE', 'USER', 'GENERAL'),
+                ('REMOVE_APPLICATION_USERS', 'REMOVE', 'USER', 'GENERAL');
+
+                -- Role permissions
+                INSERT IGNORE INTO permission(name, action_type, entity_type, category)
+                VALUES ('READ_USER_ROLES', 'READ', 'ROLE', 'GENERAL'),
+                ('CREATE_USER_ROLES', 'CREATE', 'ROLE', 'GENERAL'),
+                ('UPDATE_USER_ROLES', 'UPDATE', 'ROLE', 'GENERAL'),
+                ('READ_USER_PERMISSIONS', 'READ', 'PERMISSION', 'GENERAL');
+
+                -- Branch permissions
+                INSERT IGNORE INTO permission(name, action_type, entity_type, category)
+                VALUES ('READ_BRANCHES', 'READ', 'BRANCH', 'COMPANY'),
+                ('CREATE_BRANCHES', 'CREATE', 'BRANCH', 'COMPANY'),
+                ('UPDATE_BRANCHES', 'UPDATE', 'BRANCH', 'COMPANY'),
+                ('CLOSE_BRANCHES', 'CLOSE', 'BRANCH', 'COMPANY');
+
+                 -- Branch permissions
+                INSERT IGNORE INTO permission(name, action_type, entity_type, category)
+                VALUES ('READ_COMPANIES', 'READ', 'COMPANY', 'COMPANY'),
+                ('CREATE_COMPANIES', 'CREATE', 'COMPANY', 'COMPANY'),
+                ('UPDATE_COMPANIES', 'UPDATE', 'COMPANY', 'COMPANY'),
+                ('CLOSE_COMPANIES', 'CLOSE', 'COMPANY', 'COMPANY');
+
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="create-table-role" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="role"/>
+            </not>
+        </preConditions>
+        <comment>Create table for recording roles of app users</comment>
+        <createTable tableName="role">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="longtext">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="15062021_FK_role_account_id"
+                             references="account(id)"/>
+            </column>
+            <column name="record_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-role_permission" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="role_permission"/>
+            </not>
+        </preConditions>
+        <comment>Create join table for role and permission</comment>
+        <createTable tableName="role_permission">
+            <column name="role_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="09062021_FK_role_permission_role_id"
+                             references="role(id)"/>
+            </column>
+            <column name="permission_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="09062021_FK_role_permission_permission_id"
+                             references="permission(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-app_user" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="app_user"/>
+            </not>
+        </preConditions>
+        <comment>Create table for recording all the users of the system</comment>
+        <createTable tableName="app_user">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="first_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="unique_app_user_email"/>
+            </column>
+            <column name="phone_number" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_verified" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="15062021_FK_user_account_id"
+                             references="account(id)"/>
+            </column>
+            <column name="company_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="18062021_FK_user_company_id"
+                             references="company(id)"/>
+            </column>
+            <column name="branch_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="25062021_FK_user_branch_id"
+                             references="branch(id)"/>
+            </column>
+            <column name="role_id" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="09062021_FK_user_role_id"
+                             references="role(id)"/>
+            </column>
+            <column name="created_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="01062021_FK_created_by_user_id"
+                             references="app_user(id)"/>
+            </column>
+            <column name="modified_by" type="bigint">
+                <constraints nullable="true"
+                             foreignKeyName="01062021_FK_modified_by_user_id"
+                             references="app_user(id)"/>
+            </column>
+            <column name="record_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="company" baseColumnNames="created_by"
+                                 constraintName="01062021_FK_company_created_by"
+                                 referencedTableName="app_user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="company" baseColumnNames="modified_by"
+                                 constraintName="01062021_FK_company_modified_by"
+                                 referencedTableName="app_user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="insert_operation/backoffice_account" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM account;
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM role;
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM app_user;
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM role_permission;
+            </sqlCheck>
+        </preConditions>
+
+        <comment>Insert operations/backoffice account for management</comment>
+        <sql>
+            <![CDATA[
+                INSERT IGNORE INTO account(name, address, country_code, email, contact_phone_number, account_type, record_status)
+                VALUES ('Mojagap Uganda Ltd', 'Kampala/Uganda', 'UG', 'admin@mojagap.io', '+256780000000', 'BACK_OFFICE', 'ACTIVE');
+            ]]>
+
+            <![CDATA[
+                INSERT IGNORE INTO role(name, description, account_id, record_status)
+                VALUES ('Super Administrator', 'This role provides all application permissions',
+                        (SELECT account.id FROM account LIMIT 1), 'ACTIVE');
+            ]]>
+
+            <![CDATA[
+                INSERT IGNORE INTO role_permission(role_id, permission_id)
+                VALUES ((SELECT role.id FROM role LIMIT 1),
+                        (SELECT permission.id FROM permission WHERE permission.name = 'SUPER_PERMISSION' LIMIT 1));
+            ]]>
+
+            <![CDATA[
+                INSERT IGNORE INTO app_user(first_name, last_name, date_of_birth, id_number, address, email, phone_number, password,
+                                is_verified, account_id, role_id, record_status)
+                VALUES ('Super', 'Admin', CURDATE(), 'U000040', 'Uganda/Kampala', 'admin@mojagap.io', '+256780000000',
+                        '$2a$10$IfZ8QYCUfBRqseoKLEAelOPoa0QTpVl431amtf6R59ZgXpTD.6G3a', TRUE, (SELECT account.id FROM account LIMIT 1), (SELECT role.id FROM role LIMIT 1), 'ACTIVE');
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="create-table-user_activity_log" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_activity_log"/>
+            </not>
+        </preConditions>
+
+        <comment>Create table for logging all user POST, UPDATE and DELETE actions</comment>
+
+        <createTable tableName="user_activity_log">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="request_url" type="varchar(3000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_method" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="request_headers" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="request_body" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="response_body" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="response_headers" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="response_status" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="response_status_code" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="stack_trace" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="entity_type" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="entity_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="action_type" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="remote_ip_address" type="varchar(1000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="platform_type" type="varchar(1000)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-http_call_log" author="juliuspetero@outlook.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="http_call_log"/>
+            </not>
+        </preConditions>
+        <comment>Create table for logging all external HTTP request from the systems</comment>
+        <createTable tableName="http_call_log">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="request_url" type="varchar(3000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_method" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="request_headers" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="request_body" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="response_body" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="response_headers" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="response_status" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="response_status_code" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="stack_trace" type="longtext">
+                <constraints nullable="true"/>
+            </column>
+            <column name="action_type" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_on" type="timestamp" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="int">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
